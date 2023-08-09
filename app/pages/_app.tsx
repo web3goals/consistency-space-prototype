@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { getSupportedChains } from "@/utils/chains";
 import { ThemeProvider } from "@mui/material";
 import {
   getDefaultWallets,
@@ -12,13 +13,11 @@ import NextNProgress from "nextjs-progressbar";
 import { SnackbarProvider } from "notistack";
 import { useEffect, useState } from "react";
 import { theme } from "theme";
-import { polygon } from "viem/chains";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 
-// TODO: Load supported chains using env variables
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygon],
+  [...getSupportedChains()],
   [publicProvider()]
 );
 
