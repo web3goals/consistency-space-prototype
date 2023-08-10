@@ -4,6 +4,7 @@ interface ChainConfig {
   chain: Chain;
   contracts: {
     profile: `0x${string}`;
+    activity: `0x${string}`;
   };
 }
 
@@ -12,12 +13,17 @@ interface ChainConfig {
  */
 export function getSupportedChainConfigs(): ChainConfig[] {
   const chainConfigs: ChainConfig[] = [];
-  if (process.env.NEXT_PUBLIC_ZORA_TESTNET_PROFILE_CONTRACT_ADDRESS) {
+  if (
+    process.env.NEXT_PUBLIC_ZORA_TESTNET_PROFILE_CONTRACT_ADDRESS &&
+    process.env.NEXT_PUBLIC_ZORA_TESTNET_ACTIVITY_CONTRACT_ADDRESS
+  ) {
     chainConfigs.push({
       chain: zoraTestnet,
       contracts: {
         profile: process.env
           .NEXT_PUBLIC_ZORA_TESTNET_PROFILE_CONTRACT_ADDRESS as `0x${string}`,
+        activity: process.env
+          .NEXT_PUBLIC_ZORA_TESTNET_ACTIVITY_CONTRACT_ADDRESS as `0x${string}`,
       },
     });
   }

@@ -12,6 +12,14 @@ export default function AccountActivities(props: {
   address: `0x${string}`;
   sx?: SxProps;
 }) {
+  /**
+   * TODO:
+   *
+   * 1. Load ids of activities from contract using moralis (https://docs.moralis.io/web3-data-api/evm/reference/get-wallet-nfts)
+   * 3. Load activity params, check-ins, heatmap by id
+   * 2. Calculate heatmap by activity check-ins
+   */
+
   return (
     <>
       <EntityList
