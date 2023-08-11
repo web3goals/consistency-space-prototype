@@ -52,6 +52,7 @@ contract Activity is ERC721Enumerable, Ownable {
         _params[newTokenId] = tokenParams;
     }
 
+    // TODO: Show error if check-in requirement is "everyone"
     function checkIn(uint tokenId) public {
         // Checks
         require(_exists(tokenId), "Invalid token ID");
