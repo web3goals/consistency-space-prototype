@@ -14,11 +14,17 @@ import { SnackbarProvider } from "notistack";
 import { useEffect, useState } from "react";
 import { theme } from "theme";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { infuraProvider } from "wagmi/providers/infura";
 import { publicProvider } from "wagmi/providers/public";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [...getSupportedChains()],
-  [publicProvider()]
+  [
+    infuraProvider({
+      apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string,
+    }),
+    publicProvider(),
+  ]
 );
 
 const { connectors } = getDefaultWallets({
