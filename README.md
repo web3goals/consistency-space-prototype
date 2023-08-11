@@ -2,11 +2,11 @@
 
 Check-in activity, inspire followers and get motivated with your friends.
 
-## 🔗 Application
+## 🔗 Links
 
-https://consistency-space.vercel.app/
+- [Application](https://consistency-space.vercel.app/)
 
-## ✨ About
+## ✨ Description
 
 ...
 
