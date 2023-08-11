@@ -404,7 +404,12 @@ function AccountActivityCardCalendar(props: {
           startDate={config.startDate}
           endDate={config.endDate}
           values={config.values}
-          titleForValue={(value) => `${value?.count || 0} check-ins`}
+          titleForValue={(value) => {
+            if (!value) {
+              return "no check-ins";
+            }
+            return `${value.count} check-ins on ${value.date}`;
+          }}
           classForValue={(value) => {
             if (!value) {
               return "color-empty";
