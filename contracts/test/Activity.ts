@@ -58,4 +58,28 @@ describe.only("Activity", function () {
     const reactions = await activityContract.getReactions(activityId, 0);
     expect(reactions.length).to.be.equal(2);
   });
+
+  it("Should create activities for different users", async function () {
+    const { activityContract, userOne, userTwo, userThree } = await loadFixture(
+      defaultFixture
+    );
+    // Check activities
+    await expect(
+      activityContract.connect(userOne).create("DESCRIPTION_1", 0, 0, {})
+    ).to.be.not.reverted;
+    await expect(
+      activityContract.connect(userTwo).create("DESCRIPTION_2", 0, 0, {})
+    ).to.be.not.reverted;
+    await expect(
+      activityContract.connect(userOne).create("DESCRIPTION_3", 0, 0, {})
+    ).to.be.not.reverted;
+    // Check activities
+    expect(await activityContract.balanceOf(userOne.address)).to.be.equal(2);
+    expect(
+      await activityContract.tokenOfOwnerByIndex(userOne.address, 0)
+    ).to.be.equal(1);
+    expect(
+      await activityContract.tokenOfOwnerByIndex(userOne.address, 1)
+    ).to.be.equal(3);
+  });
 });

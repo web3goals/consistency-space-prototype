@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @notice A contract that stores activities
  */
-contract Activity is ERC721, Ownable {
+contract Activity is ERC721Enumerable, Ownable {
     using Counters for Counters.Counter;
 
     enum CheckInRequirement {
@@ -110,7 +110,7 @@ contract Activity is ERC721, Ownable {
         address to,
         uint256 firstTokenId,
         uint256 batchSize
-    ) internal virtual override(ERC721) {
+    ) internal virtual override(ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
         // Disable transfers except minting
         if (from != address(0)) revert("Token not transferable");
