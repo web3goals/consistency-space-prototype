@@ -3,6 +3,7 @@ import useToasts from "@/hooks/useToast";
 import { chainToSupportedChainConfig } from "@/utils/chains";
 import { Box, Stack, SxProps, Typography } from "@mui/material";
 import { orange } from "@mui/material/colors";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
@@ -160,8 +161,9 @@ function AccountActivityCardActions(props: {
           onCheckedIn={props.onCheckedIn}
         />
       )}
-      {/* TODO: Implement button */}
-      <MediumLoadingButton variant="outlined">📢 Share</MediumLoadingButton>
+      <Link href={`/activities/share/${props.address}`}>
+        <MediumLoadingButton variant="outlined">📢 Share</MediumLoadingButton>
+      </Link>
     </Stack>
   );
 }
