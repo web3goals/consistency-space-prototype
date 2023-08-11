@@ -13,6 +13,34 @@ interface ChainConfig {
   };
 }
 
+const modeTestnet: Chain = {
+  id: 919,
+  name: "Mode Testnet",
+  network: "mode-testnet",
+  nativeCurrency: {
+    decimals: 18,
+    name: "ETH",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://sepolia.mode.network"],
+      webSocket: [],
+    },
+    public: {
+      http: ["https://sepolia.mode.network/"],
+      webSocket: [],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Explorer",
+      url: "https://sepolia.explorer.mode.network",
+    },
+  },
+  testnet: true,
+};
+
 /**
  * Get chain configs defined by environment variables.
  */
@@ -72,6 +100,29 @@ export function getSupportedChainConfigs(): ChainConfig[] {
           | `0x${string}`
           | undefined,
         graphQl: process.env.NEXT_PUBLIC_SEPOLIA_TESTNET_EAS_GRAPH_QL,
+      },
+    });
+  }
+  if (
+    process.env.NEXT_PUBLIC_MODE_TESTNET_PROFILE_CONTRACT_ADDRESS &&
+    process.env.NEXT_PUBLIC_MODE_TESTNET_ACTIVITY_CONTRACT_ADDRESS
+  ) {
+    chainConfigs.push({
+      chain: modeTestnet,
+      contracts: {
+        profile: process.env
+          .NEXT_PUBLIC_MODE_TESTNET_PROFILE_CONTRACT_ADDRESS as `0x${string}`,
+        activity: process.env
+          .NEXT_PUBLIC_MODE_TESTNET_ACTIVITY_CONTRACT_ADDRESS as `0x${string}`,
+      },
+      eas: {
+        contract: process.env.NEXT_PUBLIC_MODE_TESTNET_EAS_CONTRACT_ADDRESS as
+          | `0x${string}`
+          | undefined,
+        schemaUid: process.env.NEXT_PUBLIC_MODE_TESTNET_EAS_SCHEMA_UID as
+          | `0x${string}`
+          | undefined,
+        graphQl: process.env.NEXT_PUBLIC_MODE_TESTNET_EAS_GRAPH_QL,
       },
     });
   }
