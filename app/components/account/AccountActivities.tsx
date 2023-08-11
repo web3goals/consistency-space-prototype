@@ -125,10 +125,11 @@ function AccountActivityCard(props: {
           sx={{ mt: 1 }}
         />
         <AccountActivityCardCalendar
+          tokenColor={tokenParams.color}
           tokenCheckIns={tokenCheckIns}
-          sx={{ mt: 4, mb: 4 }}
+          sx={{ mt: 4 }}
         />
-        <AccountActivityCardReactions />
+        <AccountActivityCardReactions tokenId={tokenId} sx={{ mt: 2 }} />
       </CardBox>
     );
   }
@@ -220,6 +221,7 @@ function AccountActivityCardActionsCheckInButton(props: {
 }
 
 function AccountActivityCardCalendar(props: {
+  tokenColor: bigint;
   tokenCheckIns: readonly bigint[];
   sx?: SxProps;
 }) {
@@ -258,6 +260,15 @@ function AccountActivityCardCalendar(props: {
           endDate={config.endDate}
           values={config.values}
           titleForValue={(value) => `${value?.count || 0} check-ins`}
+          classForValue={(value) => {
+            if (!value) {
+              return "color-empty";
+            }
+            if (value.count === 1) {
+              return `color-${Number(props.tokenColor)}-scale-1`;
+            }
+            return `color-${Number(props.tokenColor)}-scale-n`;
+          }}
         />
       ) : (
         <FullWidthSkeleton />
@@ -266,44 +277,129 @@ function AccountActivityCardCalendar(props: {
   );
 }
 
-// TODO: Display real reactions
-function AccountActivityCardReactions() {
+function AccountActivityCardReactions(props: {
+  tokenId: bigint;
+  sx?: SxProps;
+}) {
   return (
-    <Stack spacing={1}>
-      <Stack direction="row" spacing={1} alignItems="center">
-        <MediumLoadingButton
-          variant="contained"
-          sx={{
-            background: orange[500],
-            "&:hover": {
-              background: orange[300],
-            },
-          }}
-        >
-          🤘 It’s inspiring!
-        </MediumLoadingButton>
-        <Typography variant="h6" color={orange[500]} fontWeight={700}>
-          7
-        </Typography>
-      </Stack>
-      <Stack direction="row" spacing={1} alignItems="center">
-        <MediumLoadingButton
-          variant="outlined"
-          sx={{
-            color: orange[500],
-            borderColor: orange[500],
-            "&:hover": {
-              color: orange[300],
-              borderColor: orange[300],
-            },
-          }}
-        >
-          🤯 You are crazy!
-        </MediumLoadingButton>
-        <Typography variant="h6" color={orange[500]} fontWeight={700}>
-          19
-        </Typography>
-      </Stack>
+    <Stack spacing={1} sx={{ ...props.sx }}>
+      <AccountActivityCardReaction
+        tokenId={props.tokenId}
+        reactionId={0}
+        reactionTitle="🤘 It’s inspiring!"
+      />
+      <AccountActivityCardReaction
+        tokenId={props.tokenId}
+        reactionId={1}
+        reactionTitle="🤯 You are crazy!"
+      />
     </Stack>
+  );
+}
+
+function AccountActivityCardReaction(props: {
+  tokenId: bigint;
+  reactionId: number;
+  reactionTitle: string;
+}) {
+  const { chain } = useNetwork();
+  const { address } = useAccount();
+
+  /**
+   * Define token reactions
+   */
+  const { data: tokenReactions, refetch: refetchTokenReactions } =
+    useContractRead({
+      address: chainToSupportedChainConfig(chain).contracts.activity,
+      abi: activityContractAbi,
+      functionName: "getReactions",
+      args: [props.tokenId, BigInt(props.reactionId)],
+    });
+
+  if (tokenReactions) {
+    return (
+      <Stack direction="row" spacing={2} alignItems="center">
+        {/* Display button if reaction is not added by account */}
+        {address && !tokenReactions.includes(address) ? (
+          <AccountActivityCardReactionAddButton
+            tokenId={props.tokenId}
+            reactionId={props.reactionId}
+            reactionTitle={props.reactionTitle}
+            onAdded={() => refetchTokenReactions()}
+          />
+        ) : (
+          <MediumLoadingButton variant="contained" disabled={true}>
+            {props.reactionTitle}
+          </MediumLoadingButton>
+        )}
+        <Typography variant="h6" color={orange[500]} fontWeight={700}>
+          {tokenReactions.length}
+        </Typography>
+      </Stack>
+    );
+  }
+
+  return <FullWidthSkeleton />;
+}
+
+function AccountActivityCardReactionAddButton(props: {
+  tokenId: bigint;
+  reactionId: number;
+  reactionTitle: string;
+  onAdded: () => void;
+}) {
+  const { chain } = useNetwork();
+  const { showToastSuccess } = useToasts();
+
+  /**
+   * Contract states
+   */
+  const { config: contractConfig } = usePrepareContractWrite({
+    address: chainToSupportedChainConfig(chain).contracts.activity,
+    abi: activityContractAbi,
+    functionName: "addReaction",
+    args: [props.tokenId, BigInt(props.reactionId)],
+    chainId: chainToSupportedChainConfig(chain).chain.id,
+  });
+  const {
+    data: contractWriteData,
+    isLoading: isContractWriteLoading,
+    write: contractWrite,
+  } = useContractWrite(contractConfig);
+  const { isLoading: isTransactionLoading, isSuccess: isTransactionSuccess } =
+    useWaitForTransaction({
+      hash: contractWriteData?.hash,
+    });
+
+  /**
+   * Form states
+   */
+  const isButtonLoading = isContractWriteLoading || isTransactionLoading;
+  const isButtonDisabled =
+    isButtonLoading || isTransactionSuccess || !contractWrite;
+
+  useEffect(() => {
+    if (isTransactionSuccess) {
+      showToastSuccess("Reaction is added");
+      props.onAdded();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTransactionSuccess]);
+
+  return (
+    <MediumLoadingButton
+      variant="contained"
+      loading={isButtonLoading}
+      disabled={isButtonDisabled}
+      onClick={() => contractWrite?.()}
+      sx={{
+        background: orange[500],
+        "&:hover": {
+          background: orange[300],
+        },
+      }}
+    >
+      {props.reactionTitle}
+    </MediumLoadingButton>
   );
 }

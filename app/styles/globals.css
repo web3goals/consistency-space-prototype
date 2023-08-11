@@ -7,3 +7,10 @@ body {
   background-color: #333333;
   color: #333333;
 }
+
+.react-calendar-heatmap .color-0-scale-1 { fill: #a5d6a7; }
+.react-calendar-heatmap .color-0-scale-n { fill: #4caf50; }
+.react-calendar-heatmap .color-1-scale-1 { fill: #ef9a9a; }
+.react-calendar-heatmap .color-1-scale-n { fill: #f44336; }
+.react-calendar-heatmap .color-2-scale-1 { fill: #ffcc80; }
+.react-calendar-heatmap .color-2-scale-n { fill: #ff9800; }
