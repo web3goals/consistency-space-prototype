@@ -19,6 +19,10 @@ const config: HardhatUserConfig = {
       url: process.env.RPC_URL_ZORA_TESTNET as string,
       accounts: accounts,
     },
+    sepolia: {
+      url: process.env.RPC_URL_SEPOLIA as string,
+      accounts: accounts,
+    },
   },
 };
 
