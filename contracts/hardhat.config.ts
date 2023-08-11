@@ -23,6 +23,10 @@ const config: HardhatUserConfig = {
       url: process.env.RPC_URL_SEPOLIA as string,
       accounts: accounts,
     },
+    modeTestnet: {
+      url: process.env.RPC_URL_MODE_TESTNET as string,
+      accounts: accounts,
+    },
   },
 };
 
