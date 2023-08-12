@@ -29,7 +29,6 @@ And it's a perfect app for fans of tracking and decentralized data.
 To build this project, I used:
 
 - Zora and Mode networks for storing smart contracts that allow people to create and manage their activities in the form of tokens.
-
 - And Ethereum Attestation Service to store activity check-ins made by users.
 
 ## 🔮 What's next
@@ -37,11 +36,8 @@ To build this project, I used:
 It would be great to:
 
 - Add gasless transactions.
-
 - Add login via web2 social networks.
-
 - Improve UI for mobile users.
-
 - Integrate oracles to verify off-chain activities.
 
 ## 🏗️ Architecture
